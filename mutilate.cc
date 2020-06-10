@@ -467,6 +467,11 @@ int main(int argc, char **argv) {
   options_t options;
   args_to_options(&options);
 
+#ifdef TLS
+  if (args.enable_tls)
+    options.tls = 1;
+#endif
+
   pthread_barrier_init(&barrier, NULL, options.threads);
 
   vector<string> servers;

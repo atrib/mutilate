@@ -43,12 +43,16 @@ Connection::Connection(struct event_base* _base, struct evdns_base* _evdns,
   last_tx = last_rx = 0.0;
 
 #ifdef TLS
-  ctx = SSL_CTX_new(TLS_client_method());
-  ssl = SSL_new(ctx);
-  bev = bufferevent_openssl_socket_new(base, -1, ssl, BUFFEREVENT_SSL_CONNECTING, BEV_OPT_CLOSE_ON_FREE);
-#else
-  bev = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
+  if (options.tls) {
+    ctx = SSL_CTX_new(TLS_client_method());
+    ssl = SSL_new(ctx);
+    bev = bufferevent_openssl_socket_new(base, -1, ssl, BUFFEREVENT_SSL_CONNECTING, BEV_OPT_CLOSE_ON_FREE);
+  } else
 #endif
+  {
+    bev = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
+  }
+
   bufferevent_setcb(bev, bev_read_cb, bev_write_cb, bev_event_cb, this);
   bufferevent_enable(bev, EV_READ | EV_WRITE);
 

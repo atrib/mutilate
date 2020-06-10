@@ -42,6 +42,9 @@ typedef struct {
   bool oob_thread;
 
   bool moderate;
+#ifdef TLS
+  bool tls;
+#endif
 } options_t;
 
 #endif // CONNECTIONOPTIONS_H
