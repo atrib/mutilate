@@ -6,6 +6,10 @@
 #include <string>
 
 #include <event2/bufferevent.h>
+#ifdef TLS
+#include <openssl/ssl.h>
+#include <event2/bufferevent_ssl.h>
+#endif
 #include <event2/dns.h>
 #include <event2/event.h>
 #include <event2/util.h>
@@ -62,6 +66,11 @@ private:
   struct event_base *base;
   struct evdns_base *evdns;
   struct bufferevent *bev;
+
+#ifdef TLS
+  SSL_CTX *ctx;
+  SSL *ssl;
+#endif
 
   struct event *timer; // Used to control inter-transmission time.
   double next_time;    // Inter-transmission time parameters.

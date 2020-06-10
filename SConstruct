@@ -27,6 +27,8 @@ if not conf.CheckLibWithHeader("event", "event2/event.h", "C++"):
     print "libevent required"
     Exit(1)
 conf.CheckDeclaration("EVENT_BASE_FLAG_PRECISE_TIMER", '#include <event2/event.h>', "C++")
+conf.CheckLib("event_openssl", "bufferevent_openssl_socket_new", language="C++")
+conf.CheckLib("ssl", "SSL_new", language="C++")
 if not conf.CheckLibWithHeader("pthread", "pthread.h", "C++"):
     print "pthread required"
     Exit(1)
@@ -37,8 +39,8 @@ if not conf.CheckFunc('pthread_barrier_init'):
 
 env = conf.Finish()
 
-env.Append(CFLAGS = ' -O3 -Wall -g')
-env.Append(CPPFLAGS = ' -O3 -Wall -g')
+env.Append(CFLAGS = ' -O3 -Wall -g   -DTLS')
+env.Append(CPPFLAGS = ' -O3 -Wall -g -DTLS')
 
 env.Command(['cmdline.cc', 'cmdline.h'], 'cmdline.ggo', 'gengetopt < $SOURCE')
 
